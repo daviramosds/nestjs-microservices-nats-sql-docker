@@ -1,0 +1,43 @@
+services:
+  api_gateway:
+    build: ./http-api-gateway
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./http-api-gateway:/usr/src/app/
+    command: npm run start:dev
+    environment:
+      - PORT=3000
+    mem_limit: 200m
+
+  users_microservice:
+    build: ./users-microservice
+    volumes:
+      - ./users-microservice/:/usr/src/app/
+    command: npm run start:dev
+    mem_limit: 200m
+
+  payments_microservice:
+    build: ./payments-microservice
+    volumes:
+      - ./payments-microservice/:/usr/src/app/
+    command: npm run start:dev
+    mem_limit: 200m
+
+  nats:
+    image: nats
+    ports:
+      - 4222:4222
+    mem_limit: 50m
+
+  mysql_db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password_123
+      - MYSQL_DATABASE=nestjs_db
+      - MYSQL_USER=testuser
+      - MYSQL_PASSWORD=testuser123
+      - MYSQL_TCP_PORT=3306
+    mem_limit: 300m
